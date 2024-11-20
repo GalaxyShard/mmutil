@@ -181,6 +181,10 @@ int main(int argc, char* argv[])
 				m_flag = true;
 			else if( argv[a][1] == 'z' )
 				z_flag = true;
+			else if( argv[a][1] == 't' && argv[a][2] == 'a' )
+				tmp_samp = argv[a]+3;
+			else if( argv[a][1] == 't' && argv[a][2] == 'b' )
+				tmp_song = argv[a]+3;
 		}
 		else if( !str_input )
 		{
