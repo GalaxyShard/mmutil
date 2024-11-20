@@ -13,6 +13,9 @@
 #ifndef MSL_H
 #define MSL_H
 
+extern char *tmp_samp;
+extern char *tmp_song;
+
 int MSL_Create( char* argv[], int argc, char* output, char* header, bool verbose );
 
 #endif

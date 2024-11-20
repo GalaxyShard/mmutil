@@ -42,8 +42,8 @@ u16		MSL_NSONGS;
 
 char	str_msl[256];
 
-#define TMP_SAMP "sampJ328G54AU3.tmp"
-#define TMP_SONG "songDJ34957FAI.tmp"
+char *tmp_samp = "sampJ328G54AU3.tmp";
+char *tmp_song = "songDJ34957FAI.tmp";
 
 void MSL_PrintDefinition( char* filename, u16 id, char* prefix );
 
@@ -53,14 +53,14 @@ void MSL_Erase( void )
 {
 	MSL_NSAMPS = 0;
 	MSL_NSONGS = 0;
-	file_delete( TMP_SAMP );
-	file_delete( TMP_SONG );
+	file_delete( tmp_samp );
+	file_delete( tmp_song );
 }
 
 u16 MSL_AddSample( Sample* samp )
 {
 	u32 sample_length;
-	file_open_write_end( TMP_SAMP );
+	file_open_write_end( tmp_samp );
 
 	sample_length = samp->sample_length;
 
@@ -89,12 +89,12 @@ u16 MSL_AddSampleC( Sample* samp )
 	int samp_id;
 	bool samp_match;
 		
-	int fsize=file_size( TMP_SAMP );
+	int fsize=file_size( tmp_samp );
 	if( fsize == 0 )
 	{
 		return MSL_AddSample( samp );
 	}
-	F_SAMP = fopen( TMP_SAMP, "rb" );
+	F_SAMP = fopen( tmp_samp, "rb" );
 	fseek( F_SAMP, 0, SEEK_SET );
 	samp_id = 0;
 	while( ftell( F_SAMP ) < fsize )
@@ -174,7 +174,7 @@ u16 MSL_AddModule( MAS_Module* mod )
 		mod->samples[x].msl_index = samp_id;
 	}
 	
-	file_open_write_end( TMP_SONG );
+	file_open_write_end( tmp_song );
 	Write_MAS( mod, false, true );
 	file_close_write();
 	MSL_NSONGS++;
@@ -211,7 +211,7 @@ void MSL_Export( char* filename )
 	for( x = 0; x < MSL_NSONGS; x++ )
 		write32( 0xAAAAAAAA );
 	// copy samples
-	file_open_read( TMP_SAMP );
+	file_open_read( tmp_samp );
 	for( x = 0; x < MSL_NSAMPS; x++ )
 	{
 		align32();
@@ -223,7 +223,7 @@ void MSL_Export( char* filename )
 	}
 	file_close_read();
 	
-	file_open_read( TMP_SONG );
+	file_open_read( tmp_song );
 	for( x = 0; x < MSL_NSONGS; x++ )
 	{
 		align32();
@@ -351,9 +351,9 @@ int MSL_Create( char* argv[], int argc, char* output, char* header, bool verbose
 //	if( !F_HEADER )
 //		return -1;	// needs header file!
 	
-	file_open_write( TMP_SAMP );
+	file_open_write( tmp_samp );
 	file_close_write();
-	file_open_write( TMP_SONG );
+	file_open_write( tmp_song );
 	file_close_write();
 	
 	for( x = 1; x < argc; x++ )
@@ -379,7 +379,7 @@ int MSL_Create( char* argv[], int argc, char* output, char* header, bool verbose
 		F_HEADER=NULL;
 	}
 
-	file_delete( TMP_SAMP );
-	file_delete( TMP_SONG );
+	file_delete( tmp_samp );
+	file_delete( tmp_song );
 	return ERR_NONE;
 }
